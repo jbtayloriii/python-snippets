@@ -1,6 +1,15 @@
 #!/usr/bin/python
 
+import random
+
 # A small implementation of different tree structures in python
+
+def constructRandomBinarySearchTree(values):
+	root = BinarySearchTree(values.pop(random.randrange(len(values))))
+	while len(values) > 0:
+		randomValue = values.pop(random.randrange(len(values)))
+		root.insert(randomValue)
+	return root
 
 class BinarySearchTree:
 	def __init__(self, value):
