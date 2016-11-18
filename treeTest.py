@@ -6,14 +6,19 @@ import random
 
 def main():
 	root = trees.constructRandomBinarySearchTree(range(1,20))
-	print("Inorder traversal:")
-	inorderTraversalPrint(root)
-
-	print("Preorder traversal:")
-	preorderTraversalPrint(root)
 	
 	print("Tree picture:")
-	treePrint.printTree(root)	
+	treePrint.printTree(root)
+
+	if root.contains(2):
+		print("This tree contains 2")
+
+	for number in range(2,10,3):
+		print("Removing " + str(number))
+		root.remove(number)
+	print("Tree with removed nodes:")
+	treePrint.printTree(root)
+	
 
 def inorderTraversalPrint(node):
 	inorderTraversalPrintInternal(node, 0)

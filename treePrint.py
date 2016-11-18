@@ -23,36 +23,80 @@ def getNodeIndentations(node, indentList, level, preindent):
 	if node is None:
 		return None
 
-	#add two internal lists for each level (one for the numbers, one for the edges)
+	#add another level if we haven't reached it yet
 	if len(indentList) < level + 1:
 		indentList.append([])
-		indentList.append([])
 	
+	#For each recursive call, we want to get the space that each child takes up as well as where that direct
+	#child node is placed
+
 	leftIndent = rightIndent = 0
 
-	#For each recursive call, we want to get the indentation for the child value + edge, and the total space it takes
-	#The edges will go in a separate line, so we descend two "levels" for the sake of drawing the tree for each
-	#single level in the tree
-	leftTuple = getNodeIndentations(node.left, indentList, level + 2, preindent)
-	if not leftTuple is None:
-		leftIndent = leftTuple[1]
-		indentList[level + 1].append(['/', preindent + leftTuple[0]])
+	leftSide = getNodeIndentations(node.left, indentList, level + 1, preindent)
+	if not leftSide is None:
+		leftChildPosition = leftSide[0]
+		leftIndent = leftSide[1]
 
-	valueSize = len(str(node.value))
-	indentList[level].append([node.value, preindent + leftIndent])
+	nodeSize = len(str(node.value))
 
-	rightTuple = getNodeIndentations(node.right, indentList, level + 2, preindent + leftIndent + valueSize)
-	if not rightTuple is None:
-		rightIndent = rightTuple[1]
-		indentList[level + 1].append(['\\', preindent + leftIndent + valueSize + rightTuple[0]])	
+	rightSide = getNodeIndentations(node.right, indentList, level + 1, preindent + leftIndent + nodeSize)
+	if not rightSide is None:
+		rightChildPosition = rightSide[0] + leftIndent + nodeSize
+		rightIndent = rightSide[1]
 
-	return [leftIndent, leftIndent + valueSize + rightIndent]
+	if node.left and node.right:
+		#position us halfway between our children
+		nodePosition = (leftChildPosition + rightChildPosition) // 2
+	else:
+		nodePosition = leftIndent
+
+	#save the absolute node position, its value, and its child node positions
+	info = nodeInfo(nodePosition + preindent, node.value)
+	if node.left:
+		info.leftPosition = preindent + leftChildPosition
+	if node.right:
+		info.rightPosition = preindent + rightChildPosition
+	indentList[level].append(info)
+
+	return [nodePosition, leftIndent + nodeSize + rightIndent]
 		
 def printIndentList(list):
 	for sublist in list:
-		space = 0
-		for value in sublist:
-			preIndent = value[1] - space
-			sys.stdout.write(" " * preIndent + str(value[0]))
-			space = space + preIndent + len(str(value[0]))
+		usedSpace = 0
+		for node in sublist:
+			leftEdgeAmount = 0
+			if not node.leftPosition is None:
+				leftSpace = node.leftPosition - usedSpace + 1
+				leftEdgeAmount = node.nodePosition - node.leftPosition - 1
+			else:
+				leftSpace = node.nodePosition - usedSpace
+
+			sys.stdout.write(" " * leftSpace + "_" * leftEdgeAmount + str(node.value))
+			usedSpace = usedSpace + leftSpace + leftEdgeAmount + len(str(node.value))
+
+			if not node.rightPosition is None:
+				rightEdgeAmount = node.rightPosition - node.nodePosition - len(str(node.value))
+				sys.stdout.write("_" * rightEdgeAmount)
+				usedSpace = usedSpace + rightEdgeAmount
 		print("")
+
+		#print diagonal edges in between rows now
+		secondRowIndent = 0
+		for node in sublist:
+			if not node.leftPosition is None:
+				leftSpace = node.leftPosition - secondRowIndent
+				sys.stdout.write(" " * leftSpace + '/')
+				secondRowIndent = secondRowIndent + leftSpace + 1
+			if not node.rightPosition is None:
+				rightSpace = node.rightPosition - secondRowIndent
+				sys.stdout.write(" " * rightSpace + '\\')
+				secondRowIndent = secondRowIndent + rightSpace + 1
+		print("")
+
+class nodeInfo:
+	def __init__(self, nodePosition, value):
+		self.value = value
+		self.nodePosition = nodePosition
+		self.leftPosition = None
+		self.rightPosition = None
+				
