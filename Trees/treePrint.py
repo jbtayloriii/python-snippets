@@ -7,7 +7,7 @@ def printTree(root):
 	getNodeIndentations(root, indentList, 0, 0)
 	printIndentList(indentList)
 
-#not used, but is built upon in getNodeIndentations
+#not used, but the idea is built upon in getNodeIndentations.
 def getNodeSpace(node):
 	if node is None:
 		return 0
@@ -45,7 +45,7 @@ def getNodeIndentations(node, indentList, level, preindent):
 		rightIndent = rightSide[1]
 
 	if node.left and node.right:
-		#position us halfway between our children
+		#position us halfway between our children if we have both
 		nodePosition = (leftChildPosition + rightChildPosition) // 2
 	else:
 		nodePosition = leftIndent
