@@ -32,21 +32,6 @@ class BinarySearchTree:
 			else:
 				self.left.insert(value)
 
-	def getNode(self, value):
-		return self.getNodeInternal(value, self)
-
-	def getNodeInternal(self, value, node):
-		if node is None:
-			return None
-		if value > node.value:
-			return self.getNodeInternal(value, node.right)
-		elif value < node.value:
-			return self.getNodeInternal(value, node.left)
-		elif value == node.value:
-			return node
-		else:
-			return None
-
 	def contains(self, value):
 		if self.value == value:
 			return True

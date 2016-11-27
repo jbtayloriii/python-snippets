@@ -3,9 +3,10 @@
 import trees
 import treePrint
 import random
+import treeNextValue
 
 def main():
-	root = trees.constructRandomBinarySearchTree(range(1,20))
+	root = trees.constructRandomBinarySearchTree(range(1,60))
 	
 	print("Tree picture:")
 	treePrint.printTree(root)
@@ -13,11 +14,13 @@ def main():
 	if root.contains(2):
 		print("This tree contains 2")
 
-	for number in range(2,10,3):
+	for number in range(2,60,3):
 		print("Removing " + str(number))
 		root.remove(number)
 	print("Tree with removed nodes:")
 	treePrint.printTree(root)
+	print("Next sequential node after 4:")
+	print(treeNextValue.getNextSequentialBinarySearchTreeNode(root.getNode(4)).value)
 	
 
 def inorderTraversalPrint(node):

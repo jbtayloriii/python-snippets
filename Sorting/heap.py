@@ -40,8 +40,8 @@ class minHeap:
 		left = (position * 2) + 1
 		right = (position * 2) + 2
 		
-		#This long while condition checks that we have children and that we violate heap (position
-		# value is greater than either of its children
+		#This long condition checks that we have children and that we violate heap
+		# (position value is greater than either of its children)
 		while (left < len(self.tree) and self.tree[position] > self.tree[left]) or (right < len(self.tree) and self.tree[position] > self.tree[right]):
 			if (not right < len(self.tree)) or self.tree[left] < self.tree[right]:
 				#swap with left
